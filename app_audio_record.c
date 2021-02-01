@@ -1,10 +1,10 @@
 /*
- * Copyright 2016-2020, Cypress Semiconductor Corporation or a subsidiary of
- * Cypress Semiconductor Corporation. All Rights Reserved.
+ * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
- * materials ("Software"), is owned by Cypress Semiconductor Corporation
- * or one of its subsidiaries ("Cypress") and is protected by and subject to
+ * materials ("Software") is owned by Cypress Semiconductor Corporation
+ * or one of its affiliates ("Cypress") and is protected by and subject to
  * worldwide patent protection (United States and foreign),
  * United States copyright laws and international treaty provisions.
  * Therefore, you may use this Software only as provided in the license
@@ -13,7 +13,7 @@
  * If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
  * non-transferable license to copy, modify, and compile the Software
  * source code solely for use in connection with Cypress's
- * integrated circuit products. Any reproduction, modification, translation,
+ * integrated circuit products.  Any reproduction, modification, translation,
  * compilation, or representation of this Software except as specified
  * above is prohibited without the express written permission of Cypress.
  *
@@ -36,16 +36,24 @@
  * This file implements the Audio Record
  */
 #include "wiced.h"
+#include "wiced_hal_gpio.h"
 #include "wiced_bt_audio_record.h"
 #include "app_trace.h"
 #include "app_audio_record.h"
 #include "app_audio_opus.h"
-
+#ifdef AUDIO_RECORD_ON_PDM_INPUT
+#include "pdm_aud_record.h"
+#endif
 
 /*
  * Definitions
  */
 #define AUDIO_RECORD_NB_CHANNELS        2
+
+#ifdef AUDIO_RECORD_ON_PDM_INPUT
+#define DMIC_CLOCK_PIN                  WICED_P26   /* Led 1 */
+#define DMIC_DATA_PIN                   WICED_P27   /* Led 2 */
+#endif
 
 typedef struct
 {
@@ -78,8 +86,14 @@ wiced_result_t app_audio_record_init(app_audio_record_callback_t *p_callback)
 
     memset(&app_audio_record_cb, 0, sizeof(app_audio_record_cb));
 
-    /* Initialize the Audio REcode library */
+#ifdef AUDIO_RECORD_ON_PDM_INPUT
+    APP_TRACE_DBG("\npdm: data_pin=%d clock_pin=%d\n",DMIC_DATA_PIN,DMIC_CLOCK_PIN);
+    status = wiced_bt_audio_record_select_pdm_pads(DMIC_DATA_PIN, DMIC_CLOCK_PIN);
+#endif
+
+    /* Initialize the Audio Recode library */
     status = wiced_bt_audio_record_init(app_audio_record_callback);
+
     if (status != WICED_BT_SUCCESS)
     {
         APP_TRACE_ERR("wiced_bt_audio_record_init failed\n");

@@ -1,10 +1,10 @@
 #
-# Copyright 2016-2020, Cypress Semiconductor Corporation or a subsidiary of
-# Cypress Semiconductor Corporation. All Rights Reserved.
+# Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+# an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 #
 # This software, including source code, documentation and related
-# materials ("Software"), is owned by Cypress Semiconductor Corporation
-# or one of its subsidiaries ("Cypress") and is protected by and subject to
+# materials ("Software") is owned by Cypress Semiconductor Corporation
+# or one of its affiliates ("Cypress") and is protected by and subject to
 # worldwide patent protection (United States and foreign),
 # United States copyright laws and international treaty provisions.
 # Therefore, you may use this Software only as provided in the license
@@ -13,7 +13,7 @@
 # If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
 # non-transferable license to copy, modify, and compile the Software
 # source code solely for use in connection with Cypress's
-# integrated circuit products. Any reproduction, modification, translation,
+# integrated circuit products.  Any reproduction, modification, translation,
 # compilation, or representation of this Software except as specified
 # above is prohibited without the express written permission of Cypress.
 #
@@ -47,7 +47,8 @@ TARGET=CYW920721B2EVK-02
 SUPPORTED_TARGETS = \
   CYW920721B2EVK-03 \
   CYW920721B2EVK-02 \
-
+  CYW920721M2EVK-01 \
+  CYW920721M2EVK-02
 #
 # Advanced Configuration
 #
@@ -75,6 +76,8 @@ XIP?=xip
 TRANSPORT?=UART
 ENABLE_DEBUG?=0
 ENABLE_COMPRESS?=1
+# ---- ENABLE_PDM?=1 is only supported in CYW920721M2EVK-02, the base board SW4 must be switched to DMIC
+ENABLE_PDM?=0
 
 # wait for SWD attach
 ifeq ($(ENABLE_DEBUG),1)
@@ -88,7 +91,12 @@ ifeq ($(ENABLE_COMPRESS),1)
 CY_APP_DEFINES += -DCOMPRESS_ENABLED
 endif
 
+ifeq ($(ENABLE_PDM),1)
+CY_APP_DEFINES += -DAUDIO_RECORD_ON_PDM_INPUT=1
+CY_APP_PATCH_LIBS += pdm_aud_record_lib.a
+else
 CY_APP_PATCH_LIBS += i2s_aud_record_lib.a
+endif
 
 #
 # Components (middleware libraries)
@@ -118,10 +126,14 @@ COMPONENTS += codec_cs47l35_lib
 endif
 
 ifeq ($(TARGET),CYW920721M2EVK-02)
-CY_APP_DEFINES += -DCS47L35_CODEC_ENABLE
-CY_APP_DEFINES += -DPLATFORM_LED_DISABLED
-COMPONENTS += cyw9bt_audio2
-COMPONENTS += codec_cs47l35_lib
+ CY_APP_DEFINES += -DCS47L35_CODEC_ENABLE
+ CY_APP_DEFINES += -DPLATFORM_LED_DISABLED
+ COMPONENTS += cyw9bt_audio2
+ COMPONENTS += codec_cs47l35_lib
+ ifeq ($(ENABLE_PDM),1)
+  DISABLE_COMPONENTS+=bsp_design_modus
+  COMPONENTS+=CYW920721M2EVK-02_design_modus
+ endif
 endif # TARGET
 
 ################################################################################
