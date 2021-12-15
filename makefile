@@ -47,7 +47,8 @@ TARGET=CYW920721B2EVK-02
 SUPPORTED_TARGETS = \
   CYW920721B2EVK-02 \
   CYW920721M2EVK-01 \
-  CYW920721M2EVK-02
+  CYW920721M2EVK-02 \
+  CYW920721M2EVB-03
 #
 # Advanced Configuration
 #
@@ -75,8 +76,9 @@ XIP?=xip
 TRANSPORT?=UART
 ENABLE_DEBUG?=0
 ENABLE_COMPRESS?=1
-# ---- ENABLE_PDM?=1 is only supported in CYW920721M2EVK-02, the base board SW4 must be switched to DMIC
+# ---- ENABLE_PDM?=1 is only supported in CYW920721M2EVK-02 and CYW920721M2EVB-03, the base board SW4 must be switched to DMIC
 ENABLE_PDM?=0
+AUDIO_SHIELD_20721M2EVB_03_INCLUDED?=0
 
 # wait for SWD attach
 ifeq ($(ENABLE_DEBUG),1)
@@ -111,12 +113,6 @@ COMPONENTS += cyw9bt_audio2
 COMPONENTS += codec_cs47l35_lib
 endif # TARGET
 
-ifeq ($(TARGET),CYW920721B2EVK-03)
-CY_APP_DEFINES += -DCS47L35_CODEC_ENABLE
-COMPONENTS += cyw9bt_audio2
-COMPONENTS += codec_cs47l35_lib
-endif # TARGET
-
 ifeq ($(TARGET),CYW920721M2EVK-01)
 CY_APP_DEFINES += -DCS47L35_CODEC_ENABLE
 CY_APP_DEFINES += -DPLATFORM_LED_DISABLED
@@ -134,6 +130,23 @@ ifeq ($(TARGET),CYW920721M2EVK-02)
   COMPONENTS+=CYW920721M2EVK-02_design_modus
  endif
 endif # TARGET
+
+ifeq ($(TARGET),CYW920721M2EVB-03)
+ AUDIO_SHIELD_20721M2EVB_03_INCLUDED=1
+ CY_APP_DEFINES += -DCS47L35_CODEC_ENABLE
+ CY_APP_DEFINES += -DPLATFORM_LED_DISABLED
+ COMPONENTS += cyw9bt_audio2
+ COMPONENTS += codec_cs47l35_lib
+endif # TARGET
+
+ifeq ($(AUDIO_SHIELD_20721M2EVB_03_INCLUDED),1)
+ DISABLE_COMPONENTS += bsp_design_modus
+  ifeq ($(ENABLE_PDM),1)
+   COMPONENTS += CYW920721M2EVB-03_design_modus
+  else
+   COMPONENTS += bsp_design_modus_shield
+  endif
+endif
 
 ################################################################################
 # Paths
