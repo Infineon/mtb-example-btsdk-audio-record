@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+# Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
 # an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 #
 # This software, including source code, documentation and related
@@ -42,10 +42,9 @@ CONFIG=Debug
 VERBOSE=
 
 # default target
-TARGET=CYW920721B2EVK-02
+TARGET=CYW920721M2EVK-02
 
 SUPPORTED_TARGETS = \
-  CYW920721B2EVK-02 \
   CYW920721M2EVK-01 \
   CYW920721M2EVK-02 \
   CYW920721M2EVB-03
@@ -106,12 +105,6 @@ COMPONENTS += bsp_design_modus
 COMPONENTS += audiomanager
 COMPONENTS += audio_insert_lib
 COMPONENTS += audio_record_lib
-
-ifeq ($(TARGET),CYW920721B2EVK-02)
-CY_APP_DEFINES += -DCS47L35_CODEC_ENABLE
-COMPONENTS += cyw9bt_audio2
-COMPONENTS += codec_cs47l35_lib
-endif # TARGET
 
 ifeq ($(TARGET),CYW920721M2EVK-01)
 CY_APP_DEFINES += -DCS47L35_CODEC_ENABLE
