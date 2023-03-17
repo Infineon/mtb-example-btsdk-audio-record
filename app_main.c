@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2023, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -127,7 +127,7 @@ APPLICATION_START( )
     WICED_BT_TRACE("* WICED AUDIO RECORD APPLICATION STARTED *\n");
     WICED_BT_TRACE("*****************************************\n");
 
-    /* Start BT stack */
+    /* Start Bluetooth stack */
     wiced_bt_stack_init(app_main_bt_management_cback, NULL, NULL);
 }
 

@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
+# Copyright 2016-2023, Cypress Semiconductor Corporation (an Infineon company) or
 # an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 #
 # This software, including source code, documentation and related
@@ -120,7 +120,7 @@ ifeq ($(TARGET),CYW920721M2EVK-02)
  COMPONENTS += codec_cs47l35_lib
  ifeq ($(ENABLE_PDM),1)
   DISABLE_COMPONENTS+=bsp_design_modus
-  COMPONENTS+=CYW920721M2EVK-02_design_modus
+  COMPONENTS+=CYW920721M2EVK_02_design_modus
  endif
 endif # TARGET
 
@@ -135,7 +135,7 @@ endif # TARGET
 ifeq ($(AUDIO_SHIELD_20721M2EVB_03_INCLUDED),1)
  DISABLE_COMPONENTS += bsp_design_modus
   ifeq ($(ENABLE_PDM),1)
-   COMPONENTS += CYW920721M2EVB-03_design_modus
+   COMPONENTS += CYW920721M2EVB_03_design_modus
   else
    COMPONENTS += bsp_design_modus_shield
   endif
